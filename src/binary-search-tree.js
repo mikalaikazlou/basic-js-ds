@@ -1,31 +1,74 @@
-const { NotImplementedError } = require('../extensions/index.js');
+// const { NotImplementedError } = require('../extensions/index.js');
 
-// const { Node } = require('../extensions/list-tree.js');
+const { Node } = require('../extensions/list-tree.js');
 
 /**
 * Implement simple binary search tree according to task description
 * using Node from extensions
 */
 class BinarySearchTree {
-
+  constructor() {
+    this.rootNode = null;
+  }
   root() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    return this.rootNode;
   }
 
-  add(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  add(data) {
+    let node = new Node(data);
+    if (this.rootNode === null) {
+      this.rootNode = node;
+    }
+    if (node.data < this.rootNode) {
+      if (node.left === null) {
+        node.left = node.data;
+      } else {
+        this.add(node);
+      }
+    }
+    else {
+      if (node.right === null) {
+        node.right = node;
+      } else {
+        this.add(node);
+      }
+    }
   }
 
-  has(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  has(data) {
+    let curData = this.rootNode;
+    while (true) {
+      if (!curData) {
+        return false;
+      }
+      if (curData.data === data) {
+        return true;
+      }
+      if (curData.data > data) {
+        curData = curData.right;
+      } else {
+        curData = curData.left;
+      }
+    }
   }
 
-  find(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+
+  find(data) {
+    let curData = this.rootNode;
+    while (true) {
+      if (!curData) {
+        return null;
+      }
+      if (curData.data === data) {
+        return curData;
+      }
+
+      if (curData.data > data) {
+        curData = curData.right;
+      } else {
+        curData = curData.left;
+      }
+    }
   }
 
   remove(/* data */) {
