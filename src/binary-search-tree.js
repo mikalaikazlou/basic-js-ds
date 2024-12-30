@@ -1,11 +1,11 @@
 // const { NotImplementedError } = require('../extensions/index.js');
 
-const { Node } = require('../extensions/list-tree.js');
+const { Node } = require("../extensions/list-tree.js");
 
 /**
-* Implement simple binary search tree according to task description
-* using Node from extensions
-*/
+ * Implement simple binary search tree according to task description
+ * using Node from extensions
+ */
 class BinarySearchTree {
   constructor() {
     this.rootNode = null;
@@ -15,78 +15,126 @@ class BinarySearchTree {
   }
 
   add(data) {
-    let node = new Node(data);
-    if (this.rootNode === null) {
-      this.rootNode = node;
-    }
-    if (node.data < this.rootNode) {
-      if (node.left === null) {
-        node.left = node.data;
-      } else {
-        this.add(node);
+    this.rootNode = addNode(this.rootNode, data);
+    function addNode(node, data) {
+      if (!node) {
+        return new Node(data);
       }
-    }
-    else {
-      if (node.right === null) {
-        node.right = node;
-      } else {
-        this.add(node);
+      if (node.data === data) {
+        return node;
       }
+
+      if (node.data > data) {
+        node.left = addNode(node.left, data);
+      } else {
+        node.right = addNode(node.right, data);
+      }
+      return node;
     }
   }
 
   has(data) {
-    let curData = this.rootNode;
-    while (true) {
-      if (!curData) {
+    return existNode(this.rootNode, data);
+    function existNode(node, data) {
+      if (!node) {
         return false;
       }
-      if (curData.data === data) {
+      if (node.data === data) {
         return true;
       }
-      if (curData.data > data) {
-        curData = curData.right;
+      if (node.data < data) {
+        return existNode(node.right, data);
       } else {
-        curData = curData.left;
+        return existNode(node.left, data);
       }
     }
   }
-
 
   find(data) {
-    let curData = this.rootNode;
-    while (true) {
-      if (!curData) {
+    return existNode(this.rootNode, data);
+    function existNode(node, data) {
+      if (!node) {
         return null;
       }
-      if (curData.data === data) {
-        return curData;
+      if (node.data === data) {
+        return node;
       }
-
-      if (curData.data > data) {
-        curData = curData.right;
+      if (node.data < data) {
+        return existNode(node.right, data);
       } else {
-        curData = curData.left;
+        return existNode(node.left, data);
       }
     }
   }
 
-  remove(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  remove(data) {
+    if (!data) {
+      return null;
+    }
+    this.rootNode = removeNode(this.rootNode, data);
+    function removeNode(node, data) {
+      if (!node) {
+        return null;
+      }
+      if (node.data > data) {
+        node.left = removeNode(node.left, data);
+        return node;
+      } else if (node.data < data) {
+        node.right = removeNode(node.right, data);
+        return node;
+      } else {
+        if (!node.right && !node.left) {
+          return null;
+        }
+        if (!node.right) {
+          node = node.left;
+          return node;
+        }
+        if (!node.left) {
+          node = node.right;
+          return node;
+        }
+
+        let minRightNode = node.right;
+        while (minRightNode.left) {
+          minRightNode = minRightNode.left;
+        }
+        node.data = minRightNode.data;
+        node.right = removeNode(node.right, minRightNode.data);
+        return node;
+      }
+    }
   }
 
   min() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    return existNode(this.rootNode);
+    function existNode(node) {      
+      if (!node) {
+        return null;
+      }
+      if (!node.left) {
+        return node.data;
+      } else {
+        return existNode(node.left);
+      } 
+    }
   }
 
   max() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    return existNode(this.rootNode);
+    function existNode(node) {      
+      if (!node) {
+        return null;
+      }
+      if (!node.right) {
+        return node.data;
+      } else {
+        return existNode(node.right);
+      } 
+    }
   }
 }
 
 module.exports = {
-  BinarySearchTree
+  BinarySearchTree,
 };
